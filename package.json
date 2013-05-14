@@ -1,5 +1,5 @@
 {
-  "name": "TweetMapVisualizer",
+  "name": "KKtweets",
   "version": "0.0.1",
   "dependencies": {
         "express": "3.0.3",
@@ -8,7 +8,9 @@
         "socket.io":"0.9.11",
         "geocoder": "0.1.x",
         "ministore": "0.0.x",
-        "redis": ""
+        "redis": "",
+        "mysql": "",
+        "util": ""        
   },
     "engines": {
         "node": "0.8.x",
