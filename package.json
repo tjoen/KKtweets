@@ -1,0 +1,17 @@
+{
+  "name": "TweetMapVisualizer",
+  "version": "0.0.1",
+  "dependencies": {
+        "express": "3.0.3",
+        "ejs": "0.8.3",
+        "ntwitter":"0.5.0",
+        "socket.io":"0.9.11",
+        "geocoder": "0.1.x",
+        "ministore": "0.0.x",
+        "redis": ""
+  },
+    "engines": {
+        "node": "0.8.x",
+        "npm": "1.1.x"
+    }
+}

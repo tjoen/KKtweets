@@ -1,0 +1,53 @@
+#map {height: 700px; width:1000px;}
+
+#map img { max-width: none; }
+
+#mapwidget{
+    border: 1px solid #e3e3e3;
+}
+
+.widgetblock {
+    height: 300px;
+    overflow : auto;
+}
+
+#chart1 {
+    height: 300px;
+}
+
+/*Twitter bootstrap overrides*/
+
+.row {
+    margin: 5px;
+}
+.nav {
+    margin-bottom: 0px;
+}
+.nav-tabs {
+    border-bottom: 0px;
+}
+.accordion-heading {
+    font-size: 5px;
+}
+
+.accordion-inner {
+    padding: 0px 0px;
+    border-top: 0px;
+}
+
+.accordion-group {
+    margin-top: 10px;
+    border: 0px;
+}
+
+.breadcrumb {
+    margin-bottom: 5px;
+    background-color: #1b1b1b;
+}
+
+.breadcrumb a{
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
