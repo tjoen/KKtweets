@@ -9,6 +9,7 @@ var express = require('express')
   , io = require('socket.io').listen(server)
   , path = require('path')
   , twitter = require('ntwitter')
+  , twittertxt = require('twitter-text')
   , geocoder = require('./geo')
   , store = require('ministore')('.')
   , redis = require("redis")
@@ -98,7 +99,7 @@ var boundingToCoordinates = function(bounding, /*maximal long*/ max) {
 
 //var criteria = ['-74,40,-73,41']; //<-- filter by location(s) (ex: New York)
 
-var criteria = ['kk', 'kanker', 'tering','godver','tyfus','tiefes','tiefus','kenker','lijer']; //<-- filter by term(s) (ex: this OR that)
+var criteria = ['godver', 'lijer', 'godvedomme', 'godverdorie', 'godsamme', 'krijg de kanker', 'krijg de tering', 'krijg de tyfus', 'krijg de', 'krijg de pleuris', 'val dood', 'stik erin', 'tief op', 'tyf op', 'kanker op', '', 'kanker', 'tyfus', 'kenker', 'kk', 'tiefus', 'tiefes', 'tyfes', 'tifus', 'tifes', 'tering', 'mongol', 'mongool', 'debiel', 'bitch']; //<-- filter by term(s) (ex: this OR that)
 
 //twit.stream('statuses/filter', {locations: '-180,-90,180,90'}, function(stream) { // possibilities {track: criteria} OR {locations: criteria}
 watchKKTwitter = function() {
@@ -201,6 +202,8 @@ parseTweet = function(tweet, geo, latitude, longitude) {
 
 // store the body of the tweet
    var text = tweet.text;
+   var usernames = twittertxt.extractMentions(tweet.text);
+   var hashtags = twittertxt.extractHashtags(tweet.text)
 
 // if this fails these checks it does not hold any data I want
    // for now I only work with english tweets.
@@ -244,7 +247,9 @@ parseTweet = function(tweet, geo, latitude, longitude) {
 	     user.id, 
 	     tweet.id_str, 
 	     tweet.created_at, 
-	     text, 
+	     text,
+	     usernames.toString(),
+	     hashtags.toString(),
 	     tweet.lang,
 	     user.followers_count, 
 	     user.statuses_count,
@@ -270,7 +275,7 @@ parseTweet = function(tweet, geo, latitude, longitude) {
 
 insertTweet = function(tweet) {
    // build query and run
-   client.query('INSERT INTO tweets SET username = ?, name = ?, userid = ?, tweetID = ?, date = ? , tweet = ?, lang = ?, userfollowercount = ?, userstatuscount = ?, following = ?, in_reply_to_status_id = ?, in_reply_to_user_id = ?, in_reply_to_screen_name = ?, source = ?, retweet_count = ?, retweeted = ?, default_profile_image = ?, description = ?, geo = ?, latitude = ?, longitude = ?', tweet,
+   client.query('INSERT INTO tweets SET username = ?, name = ?, userid = ?, tweetID = ?, date = ? , tweet = ?, tusernames = ?, thashtags = ?, lang = ?, userfollowercount = ?, userstatuscount = ?, following = ?, in_reply_to_status_id = ?, in_reply_to_user_id = ?, in_reply_to_screen_name = ?, source = ?, retweet_count = ?, retweeted = ?, default_profile_image = ?, description = ?, geo = ?, latitude = ?, longitude = ?', tweet,
       function(error, results) {
          if(error) {
             console.log("ClientReady Error: " + error.message + 'at: ' + tweet[3]);
