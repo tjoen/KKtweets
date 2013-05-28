@@ -73,7 +73,7 @@ var heatmap = new HeatmapOverlay(map, {
         if(data.geo){
             updateTotalTweetsWithGeo();
             // Add a marker to the map
-            addMarker(data.latitude,data.longitude,data.user,data.text);
+            addMarker(data.latitude,data.longitude,data.user,data.text,data.keywordFound);
             
             //Google maps heatmap layer
             //heatmapArr.push(new google.maps.LatLng(data.latitude, data.longitude));
@@ -145,7 +145,11 @@ var shape = {
   };
 */
 
-
+function isAny(x) {
+  for (var i = 1; i < arguments.length; ++i)
+    if (arguments[i] === x) return true;
+  return false;
+}
 /**
  * Adding a new marker to the map
  *
@@ -154,9 +158,29 @@ var shape = {
  * @param user
  * @param text
  */
-function addMarker(latitude,longitude,user,text){
+function addMarker(latitude,longitude,user,text,keywordFound){
     var infowindow = new google.maps.InfoWindow();
     infowindow.setContent('<a href="https://twitter.com/' +user+'" target="_blank">' + user + '</a> says: '+ '<p>'+ text+'</p>');
+    
+    var keywordFoundCat = "leeg";
+    if(isAny(keywordFound, 'godver', 'godvedomme', 'godverdorie', 'godsamme')){
+	    keywordFoundCat = "godver";
+    }else if(isAny(keywordFound, 'krijg de kanker', 'kanker op', 'kanker', 'kenker', 'kk')){
+	    keywordFoundCat = "kanker";
+    }else if(isAny(keywordFound, 'krijg de tering', 'tering')){
+    	keywordFoundCat = "tering";
+    }else if(isAny(keywordFound, 'krijg de tyfus', 'tief op', 'tyf op', 'tiefus', 'tiefes', 'tyfes', 'tifus', 'tifes', 'tyfus')){
+	    keywordFoundCat = "tyfus";
+    }
+	    
+    
+    var MarkerColors = {
+    	kanker: 'red',
+    	tering: 'blue',
+    	tyfus: 'yellow',
+    	godver: 'purple',
+    	leeg: 'white'
+    };
     var marker = new google.maps.Marker({
         map:map,
         draggable:false,
@@ -165,10 +189,10 @@ function addMarker(latitude,longitude,user,text){
         icon: {
                        path: google.maps.SymbolPath.CIRCLE,
                        scale: 5,
-                       fillColor: 'white',
+                       fillColor: MarkerColors[keywordFoundCat],
                        strokeWeight:0,
-                       strokeColor:'white',
-                       fillOpacity: 0.25
+                       strokeColor:MarkerColors[keywordFoundCat],
+                       fillOpacity: 0.5
                      },
         //shape: shape,
         opacity:50,

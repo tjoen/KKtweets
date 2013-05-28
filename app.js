@@ -99,7 +99,7 @@ var boundingToCoordinates = function(bounding, /*maximal long*/ max) {
 
 //var criteria = ['-74,40,-73,41']; //<-- filter by location(s) (ex: New York)
 
-var criteria = ['godver', 'lijer', 'godvedomme', 'godverdorie', 'godsamme', 'krijg de kanker', 'krijg de tering', 'krijg de tyfus', 'krijg de', 'krijg de pleuris', 'val dood', 'stik erin', 'tief op', 'tyf op', 'kanker op', '', 'kanker', 'tyfus', 'kenker', 'kk', 'tiefus', 'tiefes', 'tyfes', 'tifus', 'tifes', 'tering', 'mongol', 'mongool', 'debiel', 'bitch']; //<-- filter by term(s) (ex: this OR that)
+var criteria = ['godver', 'lijer', 'godvedomme', 'godverdorie', 'godsamme', 'krijg de kanker', 'krijg de tering', 'krijg de tyfus', 'krijg de pleuris', 'val dood', 'stik erin', 'tief op', 'tyf op', 'kanker op', 'kanker', 'tyfus', 'kenker', 'kk', 'tiefus', 'tiefes', 'tyfes', 'tifus', 'tifes', 'tering', 'mongol', 'mongool', 'debiel', 'bitch']; //<-- filter by term(s) (ex: this OR that)
 
 //twit.stream('statuses/filter', {locations: '-180,-90,180,90'}, function(stream) { // possibilities {track: criteria} OR {locations: criteria}
 watchKKTwitter = function() {
@@ -110,11 +110,16 @@ twit.stream('statuses/filter', {track: criteria}, function(stream) { // possibil
         if(data.lang){
         	//Check if the tweet is posted in Dutch (or any other language of your choosing)
         	if(data.lang == "nl"){
-		        //var ctext = data.text;
-		        //var rx = new RegExp("\\b("+criteria.join('|')+")\\b","i");
-		        //var keywordFound = rx.test(ctext);
+		        var ctext = data.text;
+		        var rx = new RegExp("\\b"+criteria.join('|')+"\\b","i");
+		        var keywordFound = rx.exec(ctext); //returns first found keyword.
+		        if(keywordFound){keywordFound = keywordFound.toString()} 
+		        //var keywordFound = rx.test(ctext); //just returns true/false on keyword found.
 		        //console.log("keyword gevonden "+rx.test(ctext));
 		        //if (keywordFound == true) {
+			   
+			        
+				    
 			    	tweetid = data.id;
 			    	var latitude;
 					var longitude;
@@ -147,7 +152,8 @@ twit.stream('statuses/filter', {track: criteria}, function(stream) { // possibil
 							text: data.text,
 							geo : geo,
 							latitude: latitude,
-							longitude: longitude
+							longitude: longitude,
+							keywordFound: keywordFound
 						});
 					}
 					else {
@@ -161,7 +167,8 @@ twit.stream('statuses/filter', {track: criteria}, function(stream) { // possibil
 								text: data.text,
 								geo : geo,
 								latitude: lat,
-								longitude: lng
+								longitude: lng,
+								keywordFound: keywordFound
 							});
 						});
 					}
