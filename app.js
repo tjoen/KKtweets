@@ -99,7 +99,7 @@ var boundingToCoordinates = function(bounding, /*maximal long*/ max) {
 
 //var criteria = ['-74,40,-73,41']; //<-- filter by location(s) (ex: New York)
 
-var criteria = ['godver', 'lijer', 'godvedomme', 'godverdorie', 'godsamme', 'krijg de kanker', 'krijg de tering', 'krijg de tyfus', 'krijg de pleuris', 'val dood', 'stik erin', 'tief op', 'tyf op', 'kanker op', 'kanker', 'tyfus', 'kenker', 'kk', 'tiefus', 'tiefes', 'tyfes', 'tifus', 'tifes', 'tering', 'mongol', 'mongool', 'debiel', 'bitch']; //<-- filter by term(s) (ex: this OR that)
+var criteria = ['gvd', 'godver', 'lijer', 'godvedomme', 'godverdorie', 'godsamme', 'krijg de kanker', 'krijg de tering', 'krijg de tyfus', 'krijg de pleuris', 'val dood', 'stik erin', 'tief op', 'tyf op', 'kanker op', 'kanker', 'tyfus', 'kenker', 'kk', 'tiefus', 'tiefes', 'tyfes', 'tifus', 'tifes', 'tering', 'mongol', 'mongool', 'debiel', 'bitch']; //<-- filter by term(s) (ex: this OR that)
 
 //twit.stream('statuses/filter', {locations: '-180,-90,180,90'}, function(stream) { // possibilities {track: criteria} OR {locations: criteria}
 watchKKTwitter = function() {
@@ -145,7 +145,7 @@ twit.stream('statuses/filter', {track: criteria}, function(stream) { // possibil
 					}
 			      
 					if (geo || !data.user.location) {
-						parseTweet(data, geo, latitude, longitude);
+						parseTweet(data, geo, latitude, longitude, keywordFound);
 		
 						io.sockets.volatile.emit('tweets', {
 							user: data.user.screen_name,
@@ -160,7 +160,7 @@ twit.stream('statuses/filter', {track: criteria}, function(stream) { // possibil
 						geocoder.queueRequest(data.user.location, function(lat, lng) {
 							
 							//geo = true;
-							parseTweet(data, geo, lat, lng);
+							parseTweet(data, geo, lat, lng, keywordFound);
 							geo = lat && lng;
 							io.sockets.volatile.emit('tweets', {
 								user: data.user.screen_name,
@@ -202,7 +202,7 @@ twit.stream('statuses/filter', {track: criteria}, function(stream) { // possibil
 });
 }
 
-parseTweet = function(tweet, geo, latitude, longitude) {
+parseTweet = function(tweet, geo, latitude, longitude, keywordFound) {
    if(!tweet.text) {
       return;
    }
@@ -257,6 +257,7 @@ parseTweet = function(tweet, geo, latitude, longitude) {
 	     text,
 	     usernames.toString(),
 	     hashtags.toString(),
+		 keywordFound,
 	     tweet.lang,
 	     user.followers_count, 
 	     user.statuses_count,
@@ -282,7 +283,7 @@ parseTweet = function(tweet, geo, latitude, longitude) {
 
 insertTweet = function(tweet) {
    // build query and run
-   client.query('INSERT INTO tweets SET username = ?, name = ?, userid = ?, tweetID = ?, date = ? , tweet = ?, tusernames = ?, thashtags = ?, lang = ?, userfollowercount = ?, userstatuscount = ?, following = ?, in_reply_to_status_id = ?, in_reply_to_user_id = ?, in_reply_to_screen_name = ?, source = ?, retweet_count = ?, retweeted = ?, default_profile_image = ?, description = ?, geo = ?, latitude = ?, longitude = ?', tweet,
+   client.query('INSERT INTO tweets SET username = ?, name = ?, userid = ?, tweetID = ?, date = ? , tweet = ?, tusernames = ?, thashtags = ?, keywordFound = ?, lang = ?, userfollowercount = ?, userstatuscount = ?, following = ?, in_reply_to_status_id = ?, in_reply_to_user_id = ?, in_reply_to_screen_name = ?, source = ?, retweet_count = ?, retweeted = ?, default_profile_image = ?, description = ?, geo = ?, latitude = ?, longitude = ?', tweet,
       function(error, results) {
          if(error) {
             console.log("ClientReady Error: " + error.message + 'at: ' + tweet[3]);
